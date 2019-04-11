@@ -58,6 +58,7 @@ layers_header_info = [
 layers2_header_info = [
     # doesn't depend on pixel size
     # does depend on screen resolution
+    "????",
     "????(depends on layer thikness or count)",
     "????",
     "????",
@@ -74,7 +75,7 @@ def print_header(header_desc, data):
         print("{}: {}".format(v, data[k]))
 
 format_string = ">5di4diiii"
-with open("c.photons", "rb") as binary_file:
+with open("_cylinde.photons", "rb") as binary_file:
     # 6 + 8 + 8 + 8 == 30
     binary_file.seek(6)
     data = binary_file.read(struct.calcsize(format_string))
@@ -93,7 +94,7 @@ with open("c.photons", "rb") as binary_file:
             np_image[i][k][2] = ((j >> 0)  & 0x1F) << 3
     # plt.imshow(np_image, interpolation='nearest')
     # for test.photons: pos = 0x12662, next around 0x19fa7, next 0x2196f (diff 79C8), next 0x2937c (diff 7A0D), next 0x30E3A (7ABE), next 0x3881E (79E4), next 0x40012 (77F4)
-    # for c.photons: pos = 0x12662, next around 0x1994A, next 0x20D9F
+    # for c.photons: pos = 0x12662, next around 0x19C16, next 0x211C6
     # 29456 bytes per layer
     # 32 byte header
     # at some point layer header becomes 28 bytes
@@ -105,14 +106,14 @@ with open("c.photons", "rb") as binary_file:
     print(struct.calcsize(layers_header_format))
     tuple_of_data = struct.unpack(layers_header_format, data)
     print_header(layers_header_info, tuple_of_data)
-    binary_file.seek(0x1994A, 0)
-    layers_header_format = '>IIIIIHHHH'
+    binary_file.seek(0x19C16, 0)
+    layers_header_format = '>HHIIIIHHHH'
     data = binary_file.read(struct.calcsize(layers_header_format))
     print(struct.calcsize(layers_header_format))
     tuple_of_data = struct.unpack(layers_header_format, data)
     print_header(layers2_header_info, tuple_of_data)
-    binary_file.seek(0x20D9F, 0)
-    layers_header_format = '>IIIIIHHHH'
+    binary_file.seek(0x211C6, 0)
+    layers_header_format = '>HHIIIIHHHH'
     data = binary_file.read(struct.calcsize(layers_header_format))
     print(struct.calcsize(layers_header_format))
     tuple_of_data = struct.unpack(layers_header_format, data)
