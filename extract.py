@@ -1,7 +1,7 @@
-with open("c.photons", "rb") as binary_file:
-    binary_file.seek(0x19C16+28)
-    buf = binary_file.read(0x75b0-28)
-    fo = open('img.dat', 'wb')
+with open("test.photons", "rb") as binary_file:
+    binary_file.seek(75362+32)
+    buf = binary_file.read(0x7945-32)
+    fo = open('img2.dat', 'wb')
     fo.write(buf)
     fo.close()
 
@@ -10,3 +10,5 @@ with open("c.photons", "rb") as binary_file:
 
 # 1A09 to first different - 6665
 # D08EF in bmp (actually maybe 1000 less) ~850k
+
+

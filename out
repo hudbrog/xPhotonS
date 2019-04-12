@@ -1,37 +1,37 @@
 Structure size: 92 (5C)
-XY Pixel Size: 0.0833333358168602
-Layer thickness: 0.05000000074505806
-Normal Exposure(s): 6.0
-Off Time(s): 0.0
-Bottom Exposure(s): 15.0
-Bottom Layers: 8
-Z Lift Distance(mm): 5.0
-Z Lift Speed(mm/s): 5.0
-Z Retract Speed(mm/s): 5.0
-Total volume(ml): 17.109878540039062
+XY Pixel Size: 0.04725
+Layer thickness: 0.05
+Normal Exposure(s): 12.0
+Off Time(s): 1.0
+Bottom Exposure(s): 80.0
+Bottom Layers: 6
+Z Lift Distance(mm): 4.0
+Z Lift Speed(mm/s): 3.0
+Z Retract Speed(mm/s): 3.0
+Total volume(ml): 0.13840168426875002
 75362
 32
-Total number of layers: 800
-????(depends on layer thikness or count): 477511
+Total number of layers: 345
+????(depends on layer thikness or count): 14266
 ????: 0
 ????: 0
 Screen Width Resolution: 1440
 Screen Length Resolution: 2560
 ??: 3
-??: 40496
+??: 51528
 ??: 40965
 ??: 20480
 28
-????: 65278
-????(depends on layer thikness or count): 65278
-????: 4278124286
-????: 4278124286
-Screen Width Resolution: 4278124286
-Screen Length Resolution: 4278124286
-??: 65278
-??: 65278
-??: 65278
-??: 65278
+????: 0
+????(depends on layer thikness or count): 15439
+????: 0
+????: 0
+Screen Width Resolution: 1440
+Screen Length Resolution: 2560
+??: 3
+??: 52608
+??: 40965
+??: 20480
 28
 ????: 65278
 ????(depends on layer thikness or count): 65278

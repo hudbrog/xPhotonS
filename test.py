@@ -75,7 +75,7 @@ def print_header(header_desc, data):
         print("{}: {}".format(v, data[k]))
 
 format_string = ">5di4diiii"
-with open("_cylinde.photons", "rb") as binary_file:
+with open("test.photons", "rb") as binary_file:
     # 6 + 8 + 8 + 8 == 30
     binary_file.seek(6)
     data = binary_file.read(struct.calcsize(format_string))
@@ -99,23 +99,26 @@ with open("_cylinde.photons", "rb") as binary_file:
     # 32 byte header
     # at some point layer header becomes 28 bytes
     # 29424 for layer data
-    print(binary_file.tell())
+    # print(binary_file.tell())
     # layers_header_format = '>IIIIIIHHHH'
     layers_header_format = '>IIIIIIHHHH'
     data = binary_file.read(struct.calcsize(layers_header_format))
-    print(struct.calcsize(layers_header_format))
+    last_pos = binary_file.tell()
+    # print(struct.calcsize(layers_header_format))
     tuple_of_data = struct.unpack(layers_header_format, data)
     print_header(layers_header_info, tuple_of_data)
-    binary_file.seek(0x19C16, 0)
+    binary_file.seek(0x19fa7, 0)
+    print("Current pos: {}, last pos: {}, diff: {}".format(hex(binary_file.tell()), hex(last_pos), hex(binary_file.tell()-last_pos)))
     layers_header_format = '>HHIIIIHHHH'
     data = binary_file.read(struct.calcsize(layers_header_format))
-    print(struct.calcsize(layers_header_format))
+    last_pos = binary_file.tell()
     tuple_of_data = struct.unpack(layers_header_format, data)
     print_header(layers2_header_info, tuple_of_data)
-    binary_file.seek(0x211C6, 0)
+    binary_file.seek(0x2196f, 0)
+    print("Current pos: {}, last pos: {}, diff: {}".format(hex(binary_file.tell()), hex(last_pos), hex(binary_file.tell()-last_pos)))
     layers_header_format = '>HHIIIIHHHH'
     data = binary_file.read(struct.calcsize(layers_header_format))
-    print(struct.calcsize(layers_header_format))
+    last_pos = binary_file.tell()
     tuple_of_data = struct.unpack(layers_header_format, data)
     print_header(layers2_header_info, tuple_of_data)
     # for i in range(tuple_of_data[5]):
