@@ -1,4 +1,4 @@
-inp = 0xFE
+inp = 0xcd
 i = 0; j = 7
 num = inp&0xFE
 print(hex(inp))

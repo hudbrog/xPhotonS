@@ -58,7 +58,6 @@ layers_header_info = [
 layers2_header_info = [
     # doesn't depend on pixel size
     # does depend on screen resolution
-    "????",
     "????(depends on layer thikness or count)",
     "????",
     "????",
@@ -72,10 +71,41 @@ layers2_header_info = [
 
 def print_header(header_desc, data):
     for k, v in enumerate(header_desc):
+        if k >= len(data):
+            return
         print("{}: {}".format(v, data[k]))
 
+def read_layer_data(fh):
+    buf = []
+    temp = ''
+    last_sym = 1
+    while 1:
+        temp = fh.read(1)
+        # if not temp:
+        #     fh.seek(-3, 1)
+        #     return buf
+        if (temp[0] == 0x0E or temp[0] == 0x0F or temp[0] == 0x0) and last_sym == 0x0:
+            fh.seek(-2, 1)
+            del buf[-1]
+            return buf
+        else:
+            buf.extend(temp)
+            last_sym = temp[0]
+
+def read_layer(fh):
+    layers_header_format = '>IIIII IHH'
+    data = fh.read(struct.calcsize(layers_header_format))
+    last_pos = binary_file.tell()
+    tuple_of_data = struct.unpack(layers_header_format, data)
+    print_header(layers2_header_info, tuple_of_data)
+    header_data_len = (tuple_of_data[5]>>3)-4
+    layer_data = fh.read(header_data_len)
+    # layer_data = read_layer_data(fh)
+    # print(":".join("{:02x}".format(c) for c in data[20:24]))
+    print("Current pos: {}, last pos: {}, data_len: {} -- {} -- {}\n-----".format(hex(binary_file.tell()), hex(last_pos), hex(len(layer_data)), len(layer_data), header_data_len))
+
 format_string = ">5di4diiii"
-with open("test.photons", "rb") as binary_file:
+with open("ringmail.photons", "rb") as binary_file:
     # 6 + 8 + 8 + 8 == 30
     binary_file.seek(6)
     data = binary_file.read(struct.calcsize(format_string))
@@ -101,29 +131,10 @@ with open("test.photons", "rb") as binary_file:
     # 29424 for layer data
     # print(binary_file.tell())
     # layers_header_format = '>IIIIIIHHHH'
-    layers_header_format = '>IIIIIIHHHH'
+    layers_header_format = '>I'
     data = binary_file.read(struct.calcsize(layers_header_format))
-    last_pos = binary_file.tell()
     # print(struct.calcsize(layers_header_format))
     tuple_of_data = struct.unpack(layers_header_format, data)
-    print_header(layers_header_info, tuple_of_data)
-    binary_file.seek(0x19fa7, 0)
-    print("Current pos: {}, last pos: {}, diff: {}".format(hex(binary_file.tell()), hex(last_pos), hex(binary_file.tell()-last_pos)))
-    layers_header_format = '>HHIIIIHHHH'
-    data = binary_file.read(struct.calcsize(layers_header_format))
-    last_pos = binary_file.tell()
-    tuple_of_data = struct.unpack(layers_header_format, data)
-    print_header(layers2_header_info, tuple_of_data)
-    binary_file.seek(0x2196f, 0)
-    print("Current pos: {}, last pos: {}, diff: {}".format(hex(binary_file.tell()), hex(last_pos), hex(binary_file.tell()-last_pos)))
-    layers_header_format = '>HHIIIIHHHH'
-    data = binary_file.read(struct.calcsize(layers_header_format))
-    last_pos = binary_file.tell()
-    tuple_of_data = struct.unpack(layers_header_format, data)
-    print_header(layers2_header_info, tuple_of_data)
-    # for i in range(tuple_of_data[5]):
-    #     img_format = "<{}h".format(tuple_of_data[4])
-    #     data = binary_file.read(struct.calcsize(img_format))
-    #     img_line = struct.unpack(img_format, data)
-    #     print(img_line)
-
+    print("-----------------------------\nNUmber of layers: {}\n-------------------\n".format(tuple_of_data[0]))
+    for i in range(tuple_of_data[0]):
+        read_layer(binary_file)
