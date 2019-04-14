@@ -1,6 +1,6 @@
 import struct
-from matplotlib import pyplot as plt
-import numpy as np
+# from matplotlib import pyplot as plt
+# import numpy as np
 
 #Normal Exposure(s):12
 #Off Time(s):1
@@ -105,7 +105,7 @@ def read_layer(fh):
     print("Current pos: {}, last pos: {}, data_len: {} -- {} -- {}\n-----".format(hex(binary_file.tell()), hex(last_pos), hex(len(layer_data)), len(layer_data), header_data_len))
 
 format_string = ">5di4diiii"
-with open("ringmail.photons", "rb") as binary_file:
+with open("zzz2.photons", "rb") as binary_file:
     # 6 + 8 + 8 + 8 == 30
     binary_file.seek(6)
     data = binary_file.read(struct.calcsize(format_string))
