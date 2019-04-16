@@ -1,7 +1,8 @@
 import struct
 from PIL.ImageQt import ImageQt
 import PIL
-import numpy as np
+import numpy
+import itertools
 
 header_info = [
     "XY Pixel Size",
@@ -29,12 +30,14 @@ class PhotonSReader():
         self.preview_w = 0
         self.preview_h = 0
         self.layer_offsets = list()
+        self.layer_data = []
+        self.layer_headers = []
         self.preview_image = None
 
     def format_bytes(self, data):
         return ":".join("{:02x}".format(c) for c in data)
     
-    def read_data(self):
+    def read_data(self, with_decode=False):
         with open(self.filename, "rb") as binary_file:
             # read and check file signature
             signature = binary_file.read(6)
@@ -58,14 +61,18 @@ class PhotonSReader():
             tuple_of_data = struct.unpack(num_layers_header_format, data)
             self.num_layers = tuple_of_data[0]
             self.layer_offsets = [None]*self.num_layers
+            self.layer_data = [None]*self.num_layers
+            self.layer_headers = [None]*self.num_layers
 
             # read layers
-            for i in range(tuple_of_data[0]):
+            for i in range(self.num_layers):
                 self.layer_offsets[i] = binary_file.tell()
                 data = binary_file.read(struct.calcsize(layers_header_format))
-                tuple_of_data = struct.unpack(layers_header_format, data)
-                header_data_len = (tuple_of_data[5]>>3)-4
-                binary_file.seek(header_data_len, 1)
+                self.layer_headers[i] = struct.unpack(layers_header_format, data)
+                header_data_len = (self.layer_headers[i][5]>>3)-4
+                self.layer_data[i] = binary_file.read(header_data_len)
+
+
 
     def get_preview_qtimage(self):
         img_data = [b'\0'] * self.preview_w*self.preview_h*3
@@ -102,34 +109,41 @@ class PhotonSReader():
         return (tuple_of_data, layerData)
 
     def get_layer_decoded_data(self, layerNum):
-        tuple_of_data, layerData = self.get_layer_raw_data(layerNum)
-        layer_h = tuple_of_data[3]
-        layer_w = tuple_of_data[4]
-        # decodedLayer = [None]*layer_w*layer_h
-        # idx = 0
-        # print("W: {}, H: {}, data_len: {}".format(layer_w, layer_h, len(layerData)))
-        # for i in range(len(layerData)):
-        #     num = rle[layerData[i]]
-        #     val = (layerData[i] & 0x01) * 255
-        #     for _ in range(num):
-        #         decodedLayer[idx] = val
-        #         idx+=1
-        # # omg.. they actually have a bug, loosing last byte in most cases
-        # while idx < layer_w*layer_h:
-        #     decodedLayer[idx] = 0
-        #     idx+=1
+        layer_h = self.layer_headers[layerNum][3]
+        layer_w = self.layer_headers[layerNum][4]
 
         decodedLayer = list()
-        for i in range(len(layerData)):
-            num = rle[layerData[i]]
-            val = (layerData[i] & 0x01) * 255
-            decodedLayer.extend([val]*num)
+        for k, g in itertools.groupby(self.layer_data[layerNum]):
+            num = rle[k]
+            val = (k & 0x01) * 255
+            decodedLayer.extend([val]*num*sum(1 for x in g))
         decodedLayer.extend([0]*(layer_w*layer_h-len(decodedLayer)))
 
-        return (tuple_of_data, decodedLayer)
+        return decodedLayer
+
+    def get_layer_decoded_data_numpy(self, layerNum):
+        layer_h = self.layer_headers[layerNum][3]
+        layer_w = self.layer_headers[layerNum][4]
+
+        decodedLayer = numpy.zeros(layer_h*layer_w, dtype=numpy.byte)
+        idx = 0
+
+        for k, g in itertools.groupby(self.layer_data[layerNum]):
+            num = rle[k]
+            if k & 0x01 == 0:
+                idx += num*sum(1 for x in g)
+            else:
+                nextIdx = idx + (num*sum(1 for x in g))
+                decodedLayer[idx:nextIdx] = 255
+                idx = nextIdx
+        decodedLayer[idx:len(decodedLayer)] = 0
+
+        return decodedLayer
+
 
     def get_layer_qtimage(self, layerNum):
-        header, data = self.get_layer_decoded_data(layerNum)
+        data = self.get_layer_decoded_data_numpy(layerNum)
+        header = self.layer_headers[layerNum]
         img = PIL.Image.frombytes("L", [header[3], header[4]], bytes(data))
         # img.show()
         return ImageQt(img)
