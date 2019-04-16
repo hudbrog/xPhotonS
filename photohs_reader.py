@@ -139,6 +139,9 @@ class PhotonSReader():
         decodedLayer[idx:len(decodedLayer)] = 0
 
         return decodedLayer
+    
+    def get_layer_bits(self, layerNum):
+        return numpy.packbits(self.get_layer_decoded_data_numpy(layerNum))
 
 
     def get_layer_qtimage(self, layerNum):

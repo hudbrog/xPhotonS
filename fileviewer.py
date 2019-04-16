@@ -77,19 +77,10 @@ class FileViewer(QMainWindow):
 
             self.imageLabel.setImage(QPixmap.fromImage(image))
 
-            self.layerSlider.setRange(-1, self.filereader.num_layers)
+            self.layerSlider.setRange(-1, self.filereader.num_layers-1)
             self.layerSlider.setTickInterval(self.filereader.num_layers/15)
             self.layerSlider.setEnabled(True)
             self.scaleFactor = 1.0
-
-            self.fitToWindowAct.setEnabled(True)
-
-            if not self.fitToWindowAct.isChecked():
-                self.imageLabel.adjustSize()
-
-    def fitToWindow(self):
-        fitToWindow = self.fitToWindowAct.isChecked()
-        self.imageLabel.setWidgetResizable(fitToWindow)
 
     def about(self):
         QMessageBox.about(self, "About Photon S File Viewer",
@@ -103,9 +94,6 @@ class FileViewer(QMainWindow):
         self.exitAct = QAction("E&xit", self, shortcut="Ctrl+Q",
                 triggered=self.close)
 
-        self.fitToWindowAct = QAction("&Fit to Window", self, enabled=False,
-                checkable=True, shortcut="Ctrl+F", triggered=self.fitToWindow)
-
         self.aboutAct = QAction("&About", self, triggered=self.about)
 
     def createMenus(self):
@@ -113,9 +101,6 @@ class FileViewer(QMainWindow):
         self.fileMenu.addAction(self.openAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.exitAct)
-
-        self.viewMenu = QMenu("&View", self)
-        self.viewMenu.addAction(self.fitToWindowAct)
 
         self.helpMenu = QMenu("&Help", self)
         self.helpMenu.addAction(self.aboutAct)
