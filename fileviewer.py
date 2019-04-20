@@ -5,7 +5,8 @@ from PyQt5.QtGui import QImage, QPainter, QPalette, QPixmap
 from PyQt5.QtWidgets import (QWidget, QAction, QApplication, QFileDialog, QLabel,
         QMainWindow, QMenu, QMessageBox, QScrollArea, QSizePolicy, QSlider, QHBoxLayout, QGraphicsTransform)
 from PyQt5.QtPrintSupport import QPrintDialog, QPrinter
-import photohs_reader
+import photons_reader
+import photon_reader
 import QtImageViewer
 
 class FileViewer(QMainWindow):
@@ -67,9 +68,13 @@ class FileViewer(QMainWindow):
         fileName, _ = QFileDialog.getOpenFileName(self, "Open File",
                 QDir.currentPath())
         if fileName:
-            self.filereader = photohs_reader.PhotonSReader(fileName)
+            if fileName.endswith(".photons"):
+                self.filereader = photons_reader.PhotonSReader(fileName)
+            elif fileName.endswith(".photon"):
+                self.filereader = photon_reader.PhotonReader(fileName)
             self.filereader.read_data()
             image = self.filereader.get_layer_qtimage(0)
+            # image = self.filereader.get_preview_qtimage()   
             if image.isNull():
                 QMessageBox.information(self, "Photon S File Viewer",
                         "Cannot load %s." % fileName)

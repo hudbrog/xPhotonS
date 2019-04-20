@@ -5,16 +5,20 @@ import numpy
 import itertools
 
 header_info = [
-    "XY Pixel Size",
-    "Layer thickness",
-    "Normal Exposure(s)",
-    "Off Time(s)",
-    "Bottom Exposure(s)",
-    "Bottom Layers",
-    "Z Lift Distance(mm)",
-    "Z Lift Speed(mm/s)",
-    "Z Retract Speed(mm/s)",
-    "Total volume(ml)",
+    "XY Pixel Size",     #0
+    "Layer thickness",   #1
+    "Normal Exposure(s)",#2
+    "Off Time(s)",       #3 
+    "Bottom Exposure(s)",#4
+    "Bottom Layers",     #5
+    "Z Lift Distance(mm)",#6
+    "Z Lift Speed(mm/s)",#7
+    "Z Retract Speed(mm/s)",#8
+    "Total volume(ml)",  #9
+    "????",
+    "????",
+    "????",
+    "????",
 ]
 
 header_format_string = ">5di4diiii"

@@ -4,3 +4,4 @@ test0*
 .vscode
 __pycache__
 *.photons
+*.photon
