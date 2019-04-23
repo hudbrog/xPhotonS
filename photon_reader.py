@@ -122,6 +122,33 @@ class PhotonReader():
                 return
             print("{}: {}".format(v, layer_header[k]))
 
+    def getXYPixelSize(self):
+        return self.header[1]/self.header[12]
+    def getLayerThickness(self):
+        return self.header[7]
+    def getNormalExposureTime(self):
+        return self.header[8]
+    def getOffTime(self):
+        return self.header[10]
+    def getBottomExposureTime(self):
+        return self.header[9]
+    def getNumBottomLayers(self):
+        return self.header[11]
+    def getZLiftDistance(self):
+        return "na"
+    def getZLiftSpeed(self):
+        return "na"
+    def getZRetractSpeed(self):
+        return "na"
+    def getTotalVolume(self):
+        return "na"
+    def getPreviewW(self):
+        return self.preview_w
+    def getPreviewH(self):
+        return self.preview_h
+    def getNumLayers(self):
+        return self.num_layers
+
     def get_preview_qtimage(self):
         img_data = numpy.zeros(self.preview_h*self.preview_w, numpy.uint32)
         i = 0

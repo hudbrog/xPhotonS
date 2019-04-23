@@ -76,7 +76,32 @@ class PhotonSReader():
                 header_data_len = (self.layer_headers[i][5]>>3)-4
                 self.layer_data[i] = binary_file.read(header_data_len)
 
-
+    def getXYPixelSize(self):
+        return self.header[0]
+    def getLayerThickness(self):
+        return self.header[1]
+    def getNormalExposureTime(self):
+        return self.header[2]
+    def getOffTime(self):
+        return self.header[3]
+    def getBottomExposureTime(self):
+        return self.header[4]
+    def getNumBottomLayers(self):
+        return self.header[5]
+    def getZLiftDistance(self):
+        return self.header[6]
+    def getZLiftSpeed(self):
+        return self.header[7]
+    def getZRetractSpeed(self):
+        return self.header[8]
+    def getTotalVolume(self):
+        return self.header[9]
+    def getPreviewW(self):
+        return self.preview_w
+    def getPreviewH(self):
+        return self.preview_h
+    def getNumLayers(self):
+        return self.num_layers
 
     def get_preview_qtimage(self):
         img_data = [b'\0'] * self.preview_w*self.preview_h*3
